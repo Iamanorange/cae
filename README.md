@@ -46,4 +46,4 @@ python3 train.py --exp_name Kodak --dataset ./dataset/Kodak
 
 
 ## Testing
-
+python3 test.py --chkpt ./checkpoints/Kodak/model_final.state --shuffle --dataset_path ./dataset/Kodak

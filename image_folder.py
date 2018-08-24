@@ -16,7 +16,7 @@ class ImageFolder720p(Dataset):
 
     def __getitem__(self, index):
         path = self.files[index % len(self.files)]
-        img = np.array(Image.open(path))
+        img = np.array(Image.open(path).resize((1280, 768)).convert('RGB'))
 
         # Why use padding instead of resizing?
         # pad = ((24, 24), (0, 0), (0, 0))

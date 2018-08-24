@@ -8,7 +8,9 @@ from torch.autograd import Variable
 from torch.utils.data import DataLoader
 
 from image_folder import ImageFolder720p
-from models.model_ae_conv_32x32x32_bin import AutoencoderConv
+ from models.model_ae_conv_32x32x32_bin import AutoencoderConv
+# latent size is 16x8x8 bits/patch (i.e. 3.75 bpp)
+# from models.model_ae_conv_bin import AutoencoderConv
 from utils import save_imgs
 
 
@@ -25,8 +27,8 @@ def test(args):
     mse_loss = nn.MSELoss()
 
     for bi, (img, patches, path) in enumerate(dataloader):
-        if "frame_40" not in path[0]: 
-            continue
+        #if "frame_40" not in path[0]: 
+        #    continue
 
         out = torch.zeros(6, 10, 3, 128, 128)
         # enc = torch.zeros(6, 10, 16, 8, 8)
@@ -36,14 +38,13 @@ def test(args):
             for j in range(10):
                 x = Variable(patches[:, :, i, j, :, :]).cuda()
                 y = model(x)
-
                 # e = model.enc_x.data
                 # p = torch.tensor(np.random.permutation(e.reshape(-1, 1)).reshape(1, 16, 8, 8)).cuda()
                 # out[i, j] = model.decode(p).data
-
                 # enc[i, j] = model.enc_x.data
+                print(type(y))
+                print(y.size())
                 out[i, j] = y.data
-
                 loss = mse_loss(y, x)
                 avg_loss += 0.6 * loss.item()
 
@@ -54,10 +55,8 @@ def test(args):
         out = np.reshape(out, (768, 1280, 3))
         out = np.transpose(out, (2, 0, 1))
 
-        y = torch.cat((img[0], out), dim=2)
-        save_imgs(imgs=y.unsqueeze(0), to_size=(3, 768, 2 * 1280), name="./test/{out_dir}/test_{bi}.png".format(out_dir=args.out_dir, bi=bi))
-
-        break
+        #y = torch.cat((img[0], out), dim=2)
+        save_imgs(imgs=out.unsqueeze(0), to_size=(3, 768, 1280), name="./test/{out_dir}/{file_name}".format(out_dir=args.out_dir, file_name=os.path.basename(path[0])))
 
 
 # save encoded
