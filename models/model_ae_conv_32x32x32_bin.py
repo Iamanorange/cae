@@ -6,7 +6,6 @@ import torch.nn as nn
 class AutoencoderConv(nn.Module):
 	"""
 	This AE module will be fed 3x128x128 patches from the original image
-
 	Shapes are (batch_size, channels, height, width)
 	"""
 
@@ -156,4 +155,4 @@ class AutoencoderConv(nn.Module):
 		cc2 = self.d_subpix_2(dbb3)
 		dec = self.d_subpix_3(cc2)
 
-		return dec
+return dec
