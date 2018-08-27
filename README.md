@@ -37,13 +37,9 @@ The documentation and further work will be written in the repo's [wiki](https://
 - Pytorch 0.4.1
 
 
-## Preparing dataset
-python3 resize.py --dataset_path ./dataset/Kodak
-
-
 ## Training
-python3 train.py --exp_name Kodak --dataset ./dataset/Kodak
+python3 train.py --exp_name Kodak --shuffle --dataset ./dataset/Kodak
 
 
 ## Testing
-python3 test.py --chkpt ./checkpoints/Kodak/model_final.state --shuffle --dataset_path ./dataset/Kodak
+python3 test.py --chkpt ./checkpoints/Kodak/model_final.state --shuffle --dataset_path ./dataset/Kodak --out_dir ./Kodak

@@ -1,57 +1,53 @@
 import glob
-
 import numpy as np
-import torch
 from PIL import Image
+import torch
 from torch.utils.data import Dataset
 
 
-class ImageFolder720p(Dataset):
-    """
-    Image shape is (1024, 2048, 3) -->  8X16 128x128 patches
-    """
-
+class BaseImageFolder(Dataset):
     def __init__(self, folder_path):
         self.files = sorted(glob.glob('%s/*.*' % folder_path))
 
-    def __getitem__(self, index):
-		path = self.files[index % len(self.files)]
-		img = np.array(Image.open(path))
-		#h, w, c = img.shape
-		#pad = ((24, 24), (0, 0), (0, 0))
-		# img = np.pad(img, pad, 'constant', constant_values=0) / 255
-		#img = np.pad(img, pad, mode='edge') / 255.0
-        img = img / 255.0
-		img = np.transpose(img, (2, 0, 1))
-		img = torch.from_numpy(img).float()
-
-		patches = np.reshape(img, (3, 8, 128, 16, 128))
-		patches = np.transpose(patches, (0, 1, 3, 2, 4))
-
-        return img, patches, path
-    '''
-    def __getitem__(self, index):
+    def getitem(self, index, w, h):
         path = self.files[index % len(self.files)]
-        img = np.array(Image.open(path).resize((1280, 768)).convert('RGB'))
-
-        # Why use padding instead of resizing?
-        # pad = ((24, 24), (0, 0), (0, 0))
-        # img = np.pad(img, pad, 'constant', constant_values=0) / 255
-        # img = np.pad(img, pad, mode='edge') / 255.0
-
+        img = Image.open(path)
+        img = img.resize((w*128, h*128))
+        # img = img.convert('RGB')
+        img = np.array(img)
         img = img / 255.0
-
         img = np.transpose(img, (2, 0, 1))
         img = torch.from_numpy(img).float()
-
-        patches = np.reshape(img, (3, 6, 128, 10, 128))
+        patches = np.reshape(img, (3, h, 128, w, 128))
         patches = np.transpose(patches, (0, 1, 3, 2, 4))
-
         return img, patches, path
-    '''
+
+    def __getitem__(self, index):
+        pass
+
     def get_random(self):
         i = np.random.randint(0, len(self.files))
         return self[i]
 
     def __len__(self):
         return len(self.files)
+
+
+# Image shape is 6x10 128x128 patches
+class ImageFolder720p(BaseImageFolder):
+    def __getitem__(self, index):
+        return self.getitem(index=index, w=10, h=6)
+
+
+# Image shape is 8x16 128x128 patches
+class ImageFolder2K(BaseImageFolder):
+    def __getitem__(self, index):
+        return self.getitem(index=index, w=16, h=8)
+
+
+# Automatically resize input image
+class ImageFolderAuto(BaseImageFolder):
+    def __getitem__(self, index):
+        path = self.files[index % len(self.files)]
+        (w, h) = Image.open(path).size
+        return self.getitem(index=index, w=w//128, h=h//128)
