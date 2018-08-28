@@ -46,7 +46,7 @@ def train(args):
                     y = model(x)
                     loss = mse_loss(y, x)
 
-                    avg_loss += 0.6 * loss.item()
+                    avg_loss += loss.item() / len(dataset)
 
                     optimizer.zero_grad()
                     loss.backward()
@@ -74,7 +74,6 @@ def train(args):
                 torch.save(model.state_dict(), "checkpoints/{exp_name}/model_{ei}_{bi}.state".format(exp_name=args.exp_name, ei=ei, bi=bi))
 
     torch.save(model.state_dict(), "checkpoints/{exp_name}/model_final.state".format(exp_name=args.exp_name))
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

@@ -46,7 +46,7 @@ def test(args):
                 # enc[i, j] = model.enc_x.data
                 out[i, j] = y.data
                 loss = mse_loss(y, x)
-                avg_loss += 0.6 * loss.item()
+                avg_loss += loss.item() / len(dataset)
 
         print('[%5d/%5d] loss: %f' % (bi, len(dataloader), avg_loss))
 
