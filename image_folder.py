@@ -13,7 +13,10 @@ class BaseImageFolder(Dataset):
         path = self.files[index % len(self.files)]
         img = Image.open(path)
         img = img.resize((w*128, h*128))
-        # img = img.convert('RGB')
+        # To ensure that the input image is RGB mode
+        # For Ex. ADE_train_00008455.jpg is not an RGB image.
+        # It will cause axes don't match in numpy.transpose().
+        img = img.convert('RGB')
         img = np.array(img)
         img = img / 255.0
         img = np.transpose(img, (2, 0, 1))
@@ -43,6 +46,12 @@ class ImageFolder720p(BaseImageFolder):
 class ImageFolder2K(BaseImageFolder):
     def __getitem__(self, index):
         return self.getitem(index=index, w=16, h=8)
+
+
+# Image shape is 8x16 128x128 patches
+class ImageFolder1024sqr(BaseImageFolder):
+    def __getitem__(self, index):
+        return self.getitem(index=index, w=16, h=16)
 
 
 # Automatically resize input image

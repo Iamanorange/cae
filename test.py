@@ -9,7 +9,7 @@ import torch.nn as nn
 from torch.autograd import Variable
 from torch.utils.data import DataLoader
 
-from image_folder import ImageFolderAuto
+from image_folder import *
 from models.model_ae_conv_32x32x32_bin import AutoencoderConv
 # latent size is 16x8x8 bits/patch (i.e. 3.75 bpp)
 # from models.model_ae_conv_bin import AutoencoderConv
