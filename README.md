@@ -1,35 +1,32 @@
-# lossy image compression with compressive autoencoders
+# Lossy Image Compression with Compressive Autoencoders
 
 
-## arch
-These models are inspired from [1].
-
-As input, we have raw 720p images from [YouTube-8M dataset](https://research.google.com/youtube8m/) (credit goes to [gsssrao](https://github.com/gsssrao/youtube-8m-videos-frames) for the downloader and frames generator scripts). The dataset consists of 121,827 frames.
-The images are padded to 1280x768 (i.e. 24,24 height pad), so that they can be split into 60 128x128 patches.
-The model only gets to see a singular patch at a time; the loss is computed as `MSELoss(orig_ij, out_ij)` (thus, there are 60 optimization steps per image).
-
-Before I get the chance to better document the code, here is a short description of each model:
-
- - `conv_32x32x32_bin`  - latent size is `32x32x32` bits/patch (i.e. compressed size: 240KB)
- - `conv_bin` - latent size is `16x8x8` bits/patch (i.e. compressed size: 7.5KB)
- - `conv_refl_pad_bin` - same as above, only that reflection pad is used (as opposed to zero pad)
- - `conv_512_bin` - latent size is `16x16x16` bits/patch (i.e. compressed size: 30KB)
-
-[1] https://arxiv.org/abs/1703.00395
-
-The documentation and further work will be written in the repo's [wiki](https://github.com/alexandru-dinu/cae/wiki).
+See [wiki](https://github.com/alexandru-dinu/cae/wiki) for more details and further results.
 
 
-## results
+## Results
 
-![1](https://i.imgur.com/GWDbay4.png)
-![2](https://i.imgur.com/KNi7fkh.jpg)
-![3](https://i.imgur.com/LDSoBKb.jpg)
-![4](https://i.imgur.com/cBJbLKg.jpg)
-![5](https://i.imgur.com/ARbPB86.jpg)
+`cae_32x32x32_zero_pad_bin` model, after roughly 5.8 millions of optimization steps;
+left: original, right: reconstructed.
+
+![](https://i.imgur.com/GWDbay4.png)
+![](https://i.imgur.com/KNi7fkh.jpg)
+![](https://i.imgur.com/LDSoBKb.jpg)
+![](https://i.imgur.com/cBJbLKg.jpg)
+![](https://i.imgur.com/ARbPB86.jpg)
+
+## Resources
+
+A smaller dataset (2,286 frames) that I have used in the 
+[Further results](https://github.com/alexandru-dinu/cae/wiki/Further-results) 
+page of the wiki can be downloaded [here](https://mega.nz/#!XU8EDCII!ZsCVLwobtZ8cWAOqRWr1qLAnn_NgVUvFhACs51EZiX8).
+
+A bigger dataset can be constructed by downloading frames using the scripts provided [here](https://github.com/gsssrao/youtube-8m-videos-frames).
+For the above results, I have randomly selected and downloaded 121,827 frames.
 
 
 ## Environments
+
 - GTX 1080 Ti (with 11GB graphic memory)
 - Ubuntu 16.04
 - Python 3.5
@@ -38,8 +35,17 @@ The documentation and further work will be written in the repo's [wiki](https://
 
 
 ## Training
+
 python3 train.py --exp_name Kodak --shuffle --dataset ./dataset/Kodak
 
 
 ## Testing
+
 python3 test.py --chkpt ./checkpoints/Kodak/model_final.state --shuffle --dataset_path ./dataset/Kodak --out_dir ./Kodak
+
+
+## References
+
+[1] https://arxiv.org/abs/1703.00395
+
+[2] http://arxiv.org/abs/1511.06085

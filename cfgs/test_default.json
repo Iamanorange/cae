@@ -1,0 +1,6 @@
+{
+  "chkpt"       : "",
+  "exp_name"    : "default",
+  "shuffle"     : false,
+  "dataset_path": "../datasets/testing"
+}
